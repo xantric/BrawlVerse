@@ -19,6 +19,7 @@ TagManager:
   - UI
   - Ground
   - Pushable
+  - Enemy
   - enemy
   - friend
   - 
