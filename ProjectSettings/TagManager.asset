@@ -3,22 +3,24 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-
   tags:
   - push
   - enemy
-
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-
+  - Ground
+  - Water
+  - UI
   - 
   - Water
   - UI
   - Ground
   - Pushable
-
+  - enemy
+  - friend
   - 
   - 
   - 

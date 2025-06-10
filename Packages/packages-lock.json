@@ -1,5 +1,6 @@
 {
   "dependencies": {
+
     "com.merry-yellow.code-assist": {
       "version": "file:com.merry-yellow.code-assist",
       "depth": 0,
@@ -7,6 +8,7 @@
       "dependencies": {}
     "com.unity.burst": {
       "version": "1.8.18",
+
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -32,6 +34,7 @@
       "url": "https://packages.unity.com"
     },
 
+
     "com.unity.editorcoroutines": {
       "version": "1.0.0",
       "depth": 1,
@@ -47,6 +50,7 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+
 
     "com.unity.feature.development": {
       "version": "1.0.1",
@@ -65,6 +69,7 @@
     "com.unity.ide.rider": {
       "version": "3.0.34",
       "depth": 1,
+
 
       "source": "registry",
       "dependencies": {
@@ -86,12 +91,14 @@
     "com.unity.ide.vscode": {
       "version": "1.2.5",
 
+
       "depth": 1,
 
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+
 
     "com.unity.performance.profile-analyzer": {
       "version": "1.2.3",
@@ -108,7 +115,6 @@
       "version": "2.0.1",
     "com.unity.render-pipelines.core": {
       "version": "14.0.11",
-
       "depth": 1,
       "source": "builtin",
       "dependencies": {
@@ -126,8 +132,9 @@
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
         "com.unity.burst": "1.8.9",
-        "com.unity.render-pipelines.core": "14.0.11",
-        "com.unity.shadergraph": "14.0.11",
+
+        "com.unity.render-pipelines.core": "14.0.12",
+        "com.unity.shadergraph": "14.0.12",
 
         "com.unity.render-pipelines.universal-config": "14.0.9"
       }
@@ -169,7 +176,6 @@
       },
       "url": "https://packages.unity.com"
     },
-
     "com.unity.testtools.codecoverage": {
       "version": "1.2.6",
       "depth": 1,
@@ -191,7 +197,6 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-
       "version": "1.7.7",
 
       "depth": 0,
