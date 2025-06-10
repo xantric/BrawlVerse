@@ -4,6 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - push
+  - enemy
   - Enemy
   layers:
   - Default
@@ -12,6 +14,11 @@ TagManager:
   - Ground
   - Water
   - UI
+  - 
+  - Water
+  - UI
+  - Ground
+  - Pushable
   - enemy
   - friend
   - 
