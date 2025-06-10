@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour {
     bool isGrounded;
     Vector3 velocity;
     private float speed;
-
+    public bool isRolling;
     private void Start() {
         speed = moveSpeed;
     }
