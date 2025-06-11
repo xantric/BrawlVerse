@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ParryManager : MonoBehaviour
 {
-    public enum Stance {Parry, Defended, Undefended};
+    public enum Stance {Parry, Block, Open};
 
     private Stance currentStance;
 
     private bool canParry = false;
-    [SerializeField] private float parryTime = 0.5f;
+    private float parryTime = 0.5f;
 
     public static Action OpenParryWindow;
     public static Action CloseParryWindow;
@@ -21,26 +21,29 @@ public class ParryManager : MonoBehaviour
     private void Awake() {
         OpenParryWindow += ParryWindowOpened;
         CloseParryWindow += ParryWindowClosed;
-        currentStance = Stance.Undefended;
+        currentStance = Stance.Open;
     }
     private void Update() {
         if (Input.GetMouseButtonDown(1)) {
-            if (canParry) {
-                if (currentStance == Stance.Undefended) currentStance = Stance.Parry;
+            if (canParry && currentStance == Stance.Open) {
+                StartCoroutine(Parrying());
             }
             else {
-                currentStance = Stance.Defended;
+                currentStance = Stance.Block;
             }
         }
-        if (!canParry && currentStance == Stance.Parry) {
-            currentStance = Input.GetMouseButton(1) ? Stance.Defended : Stance.Undefended;
-        }
-        if (Input.GetMouseButtonUp(1)) {
-            currentStance = Stance.Undefended;
+        if (Input.GetMouseButtonUp(1) && currentStance != Stance.Parry) {
+            currentStance = Stance.Open;
         }
         //Debug.Log(canParry);
         Debug.Log(currentStance);
-        anim.SetBool("defended",currentStance != Stance.Undefended);
+        anim.SetBool("defended",currentStance != Stance.Open);
+    }
+
+    private IEnumerator Parrying() {
+        currentStance = Stance.Parry;
+        yield return new WaitForSeconds(parryTime);
+        currentStance = Input.GetMouseButton(1)? Stance.Block : Stance.Open;
     }
     public Stance GetCurrentStance() {
         return currentStance;
