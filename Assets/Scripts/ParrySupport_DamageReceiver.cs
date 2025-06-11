@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParrySupport_DamageReceiver : MonoBehaviour
+public class EnemyDamageReceiver : MonoBehaviour
 {
 
     private Rigidbody rb;
