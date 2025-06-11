@@ -11,7 +11,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Ground
+  - 
   - Water
   - UI
   - 
@@ -22,12 +22,6 @@ TagManager:
   - Enemy
   - enemy
   - friend
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
   - 
   - 
   - 
