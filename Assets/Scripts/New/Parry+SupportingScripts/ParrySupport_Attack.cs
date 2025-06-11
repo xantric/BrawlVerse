@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttack : MonoBehaviour
+public class ParrySupport_Attack : MonoBehaviour
 {
     public static event Action<Vector3, Vector3, float> PushAttack;
 
@@ -13,26 +13,20 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update() {
         if (Input.GetMouseButtonDown(0)) {
-            Debug.Log("0");
-            AttackInitiated();
+            StartCoroutine(AttackInitiated()); //To open parry window
             playerPosition = transform.position;
             attackDirection = transform.forward;
-            StartCoroutine(DoDamageCoroutine(playerPosition,attackDirection,attackRange));
-            
+            DoDamage(playerPosition,attackDirection,attackRange); // Use animation events for precise positioning
         }
     }
 
-    IEnumerator DoDamageCoroutine(Vector3 playerPosition, Vector3 attackDirection, float attackRange) {
-        yield return new WaitForSeconds(0.5f);
-        DoDamage(playerPosition, attackDirection, attackRange); //Use Animation Events for precise Positioning
-    }
-
-    private void AttackInitiated() {
+    private IEnumerator AttackInitiated() {
         ParryManager.OpenParryWindow?.Invoke();
+        yield return new WaitForSeconds(0.5f); // 0.5f is parryWindowTime. Use different time for different attacks.
+        ParryManager.CloseParryWindow?.Invoke(); // Close Parry window
     }
 
     public void DoDamage(Vector3 playerPosition, Vector3 attackDirection, float attackRange) {
-        ParryManager.CloseParryWindow?.Invoke();
         PushAttack?.Invoke(playerPosition, attackDirection, attackRange);
     }
 }
