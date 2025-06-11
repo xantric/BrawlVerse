@@ -1,4 +1,0 @@
-repository "GBal/GBal@13469152909262@cloud"
-  path "/"
-    br "/main"
-    co "/main"
