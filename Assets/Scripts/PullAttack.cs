@@ -46,7 +46,7 @@ public class PullAttack : MonoBehaviour
         float elapsed = 0f;
         Vector3 startPos = enemy.position;
         Vector3 directionToPlayer = (transform.position - enemy.position).normalized;
-        Vector3 targetPos = transform.position - directionToPlayer * 2f;  // 1f = offset distance
+        Vector3 targetPos = transform.position - directionToPlayer * 1f;  // 1f = offset distance
 
 
         while (elapsed < pullDuration)
