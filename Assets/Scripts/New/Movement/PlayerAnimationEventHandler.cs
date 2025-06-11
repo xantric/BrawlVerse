@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerAnimationEventHandler : MonoBehaviour
 {
-    [SerializeField] private CharacterMovement characterMovement;
+    public PlayerStateMachine _playerStateMachine;
     public void Jump()
     {
-        characterMovement.Jump();
+        _playerStateMachine.ApplyJumpVelocity();
     }
 }

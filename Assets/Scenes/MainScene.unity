@@ -949,7 +949,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1066854147}
   - component: {fileID: 1066854152}
-  - component: {fileID: 1066854153}
+  - component: {fileID: 1066854154}
   m_Layer: 0
   m_Name: ThirdPersonController
   m_TagString: Untagged
@@ -1000,7 +1000,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.93, z: 0}
---- !u!114 &1066854153
+--- !u!114 &1066854154
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1009,9 +1009,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1066854146}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4dac8343499ff834cb35f3c8629a9478, type: 3}
+  m_Script: {fileID: 11500000, guid: 16fade98a628d59468553485807f54dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveInput: {x: 0, y: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  isJumpPressed: 0
+  isGrounded: 0
   characterController: {fileID: 1066854152}
   cam: {fileID: 653030228}
   animator: {fileID: 1301308104}
@@ -1966,7 +1970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cba266f3bd518d9438d142ba7a9f2066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterMovement: {fileID: 1066854153}
+  _playerStateMachine: {fileID: 1066854154}
 --- !u!1 &1879971419
 GameObject:
   m_ObjectHideFlags: 3

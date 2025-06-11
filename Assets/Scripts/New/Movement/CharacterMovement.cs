@@ -8,11 +8,11 @@ public class CharacterMovement : MonoBehaviour
     private PlayerControls _playerControls;
     private Vector2 moveInput;
     private float turnVelocity;
-    private Vector3 moveDir;
-    private float currentSpeed;
-    private bool isGrounded;
     private Vector3 velocity;
     private bool isJumping;
+
+    private bool _isMovementPressed;
+    private bool _isJumpPressed;
 
     [Header("Character Controller")]
     [SerializeField] private CharacterController characterController;
@@ -20,25 +20,24 @@ public class CharacterMovement : MonoBehaviour
     [Header("Camera")]
     [SerializeField] private Camera cam;
 
-    [Header("PlayerAnimator")]
-    [SerializeField] private Animator animator;
+    [Header("Player Animator")]
+    [SerializeField] public Animator animator;
 
     [Header("Parameters")]
-    [SerializeField] private float Speed;
-    [SerializeField] private float TurnVelocity;
-    public float gravity = -9.81f;
-    public float jumpHeight = 3f;
-    public float groundDistance = 0.01f;
-    public Transform groundCheck;
-    public LayerMask gLayer;
+    [SerializeField] private float Speed = 5f;
+    [SerializeField] private float TurnVelocity = 0.1f;
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float jumpHeight = 3f;
+    [SerializeField] private float groundDistance = 0.1f;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask gLayer;
 
+    private bool isGrounded;
+
+    // Unity Callbacks
     void Awake()
     {
-        _playerControls = new PlayerControls();
-        _playerControls.Movement.Keyboard.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        _playerControls.Movement.Keyboard.canceled += ctx => moveInput = Vector2.zero;
-
-        _playerControls.Movement.Jump.performed += ctx => RunJumpAnim();
+        InitializeControls();
     }
 
     void OnEnable() => _playerControls.Enable();
@@ -46,72 +45,113 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
-        // Check if grounded
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, gLayer);
+        UpdateGroundStatus();
+        ApplyGravity();
+        HandleMovement();
+        HandleJumpState();
+        HandleRotation();
+    }
 
-        // Gravity reset when grounded
+    // --- Input Initialization ---
+    void InitializeControls()
+    {
+        _playerControls = new PlayerControls();
+        _playerControls.Movement.Keyboard.performed += OnMovementInput;
+        _playerControls.Movement.Keyboard.canceled += ctx => moveInput = Vector2.zero;
+        _playerControls.Movement.Jump.performed += OnJumpInput;
+    }
+
+    void OnMovementInput(InputAction.CallbackContext ctx)
+    {
+        moveInput = ctx.ReadValue<Vector2>();
+        _isMovementPressed = moveInput != Vector2.zero;
+    }
+
+    void OnJumpInput(InputAction.CallbackContext ctx)
+    {
+        _isJumpPressed = ctx.ReadValueAsButton();
+        if (_isJumpPressed)
+            TryJump();
+    }
+
+    // --- Ground / Gravity ---
+    void UpdateGroundStatus()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, gLayer);
+    }
+
+    void ApplyGravity()
+    {
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f;
+            velocity.y = -2f; // Small value to keep character grounded
         }
 
-        // Apply gravity every frame
         velocity.y += gravity * Time.deltaTime;
         characterController.Move(velocity * Time.deltaTime);
+    }
 
-        // Movement
-        float horizontal = moveInput.x;
-        float vertical = moveInput.y;
-        Vector3 dir = new Vector3(horizontal, 0f, vertical).normalized;
-        moveDir = Vector3.zero;
+    // --- Movement ---
+    void HandleMovement()
+    {
+        Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
 
-        if (dir.magnitude > 0.1f)
+        if (direction.magnitude >= 0.1f)
         {
-            float targetAngle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, TurnVelocity);
-            transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+            Vector3 moveDir = GetMoveDirection(direction);
+            characterController.Move(moveDir * Speed * Time.deltaTime);
 
-            moveDir = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
-            characterController.Move(moveDir.normalized * Speed * Time.deltaTime);
-        }
-
-        currentSpeed = (moveDir.normalized * Speed * Time.deltaTime).magnitude;
-        if (isJumping)
-        {
-            animator.SetFloat("Speed", 0); // prevent run animation during jump
+            if (!isJumping)
+                animator.SetFloat("Speed", Speed);
         }
         else
         {
-            animator.SetFloat("Speed", currentSpeed);
+            animator.SetFloat("Speed", 0);
         }
+    }
+
+    void HandleRotation()
+    {
+        Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, TurnVelocity);
+        transform.rotation = Quaternion.Euler(0f, angle, 0f);
+    }
+
+    Vector3 GetMoveDirection(Vector3 direction)
+    {
+        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+        Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+        return moveDir.normalized;
+    }
+
+    // --- Jump ---
+    void TryJump()
+    {
+        if (isGrounded)
+        {
+            isJumping = true;
+            animator.SetTrigger("Jump");
+        }
+    }
+    public void ApplyJumpVelocity()
+    {
+        velocity.y = Mathf.Sqrt(-2f * gravity * jumpHeight);
+    }
+    void HandleJumpState()
+    {
         if (isJumping && isGrounded)
         {
             isJumping = false;
         }
     }
-    void RunJumpAnim()
-    {
-        if (isGrounded)
-        {
-            animator.SetTrigger("Jump");
-        }
-    }
-    public void Jump()
-    {
-        if (isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(-2f * gravity * jumpHeight);
-            //animator.SetTrigger("Jump");
-            isJumping = true;
-        }
-    }
 
+    // --- Gizmos ---
     void OnDrawGizmosSelected()
     {
         if (groundCheck != null)
         {
-            bool grounded = Physics.CheckSphere(groundCheck.position, groundDistance, gLayer);
-            Gizmos.color = grounded ? Color.green : Color.red;
+            Gizmos.color = isGrounded ? Color.green : Color.red;
             Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
         }
     }
