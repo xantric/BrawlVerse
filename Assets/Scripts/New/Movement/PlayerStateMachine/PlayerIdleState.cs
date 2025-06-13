@@ -9,7 +9,7 @@ public class PlayerIdleState : PlayerBaseState
     public override void UpdateState()
     {
         if (ctx.moveInput.magnitude > 0.1f)
-            ctx.SwitchState(factory.Walk());
+            ctx.SwitchState(factory.Run());
     }
 
     public override void ExitState() { }

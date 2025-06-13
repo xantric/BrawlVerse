@@ -951,7 +951,6 @@ GameObject:
   - component: {fileID: 1066854152}
   - component: {fileID: 1066854154}
   - component: {fileID: 1066854155}
-  - component: {fileID: 1066854156}
   m_Layer: 0
   m_Name: ThirdPersonController
   m_TagString: Untagged
@@ -1009,7 +1008,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1066854146}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16fade98a628d59468553485807f54dd, type: 3}
   m_Name: 
@@ -1042,34 +1041,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dac8343499ff834cb35f3c8629a9478, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterController: {fileID: 1066854152}
-  cam: {fileID: 653030228}
-  animator: {fileID: 1301308104}
-  Speed: 5
-  TurnVelocity: 0.1
-  gravity: -9.81
-  jumpHeight: 3
-  groundDistance: 0.1
-  groundCheck: {fileID: 239358848}
-  gLayer:
-    serializedVersion: 2
-    m_Bits: 8
---- !u!114 &1066854156
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1066854146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 615ef9b5c99261040981293d6fc28c14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveInput: {x: 0, y: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  _isJumpPressed: 0
-  isGrounded: 0
   characterController: {fileID: 1066854152}
   cam: {fileID: 653030228}
   animator: {fileID: 1301308104}
@@ -2270,7 +2241,7 @@ GameObject:
   - component: {fileID: 2127233756}
   - component: {fileID: 2127233755}
   - component: {fileID: 2127233754}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

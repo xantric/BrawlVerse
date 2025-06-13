@@ -14,9 +14,9 @@ public class PlayerWalkState : PlayerBaseState
             return;
         }
 
-        Vector3 moveDir = ctx.GetMoveDirection().normalized;
-        ctx.RotateTowardsMovementDirection(moveDir);
-        ctx.characterController.Move(moveDir * ctx.Speed * Time.deltaTime);
+        //Vector3 moveDir = ctx.GetMoveDirection().normalized;
+        //ctx.RotateTowardsMovementDirection(moveDir);
+        //ctx.characterController.Move(moveDir * ctx.Speed * Time.deltaTime);
     }
 
     public override void ExitState() { }

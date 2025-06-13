@@ -14,6 +14,7 @@ public class PullAttack : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            Debug.Log("E");
             DoPullAttack();
         }
     }
@@ -22,11 +23,11 @@ public class PullAttack : MonoBehaviour
     {
         // Find all enemies within range
         Collider[] enemies = Physics.OverlapSphere(transform.position, pullRange, enemyLayer);
-
+        Debug.Log(enemies.Length);
         foreach (Collider enemyCollider in enemies)
         {
             Transform enemy = enemyCollider.transform;
-
+            
             // Apply damage if Enemy script present
             Enemy enemyScript = enemy.GetComponent<Enemy>();
             if (enemyScript != null)

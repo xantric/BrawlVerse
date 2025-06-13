@@ -53,7 +53,7 @@ public class PlayerStateMachine : MonoBehaviour
     {
         UpdateGroundStatus();
         ApplyGravity();
-
+        HandleRotation();
         currentState.UpdateState();
 
         if (isJumpPressed)
@@ -69,21 +69,35 @@ public class PlayerStateMachine : MonoBehaviour
         currentState = newState;
         newState.EnterState();
     }
+    
 
-    public Vector3 GetMoveDirection()
-    {
-        Vector3 dir = new Vector3(moveInput.x, 0, moveInput.y).normalized;
-        float targetAngle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
-        return Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-    }
+    //public Vector3 GetMoveDirection()
+    //{
+    //    Vector3 dir = new Vector3(moveInput.x, 0, moveInput.y).normalized;
+    //    float targetAngle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+    //    return Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
+    //}
 
-    public void RotateTowardsMovementDirection(Vector3 direction)
+    //public void RotateTowardsMovementDirection(Vector3 direction)
+    //{
+    //    float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+    //    float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, TurnVelocity);
+    //    transform.rotation = Quaternion.Euler(0f, angle, 0f);
+    //}
+    void HandleRotation()
     {
+        Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
         float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
         float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, TurnVelocity);
         transform.rotation = Quaternion.Euler(0f, angle, 0f);
     }
 
+    public Vector3 GetMoveDirection(Vector3 direction)
+    {
+        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+        Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+        return moveDir.normalized;
+    }
     void UpdateGroundStatus()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, gLayer);

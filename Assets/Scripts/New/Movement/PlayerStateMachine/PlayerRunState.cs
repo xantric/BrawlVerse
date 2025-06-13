@@ -11,9 +11,10 @@ public class PlayerRunState : PlayerBaseState
 
     public override void UpdateState()
     {
-        Vector3 moveDir = ctx.GetMoveDirection().normalized;
-        ctx.RotateTowardsMovementDirection(moveDir);
-        ctx.characterController.Move(moveDir * ctx.Speed * 2f * Time.deltaTime);
+        Vector3 direction = new Vector3(ctx.moveInput.x, 0f, ctx.moveInput.y).normalized;
+        Vector3 moveDir = ctx.GetMoveDirection(direction);
+        //ctx.RotateTowardsMovementDirection(moveDir);
+        ctx.characterController.Move(moveDir * ctx.Speed * Time.deltaTime);
 
         if (ctx.moveInput.magnitude <= 0.1f)
             ctx.SwitchState(factory.Idle());
