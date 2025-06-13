@@ -228,18 +228,18 @@
             "id": "d86cb8c7-afda-482d-a061-dd08d04a1a77",
             "actions": [
                 {
-                    "name": "Kick",
+                    "name": "Headbutt",
                     "type": "Button",
-                    "id": "6dbeb2dc-b8e0-4845-9111-719a2c82386c",
+                    "id": "53a7693b-3001-4d7c-ab05-d16ec91ce070",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Headbutt",
+                    "name": "Kick",
                     "type": "Button",
-                    "id": "53a7693b-3001-4d7c-ab05-d16ec91ce070",
+                    "id": "5e54615b-e935-4bfe-a6fb-dab05316d36a",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -271,7 +271,7 @@
                 },
                 {
                     "name": "",
-                    "id": "a526198f-664e-4d89-bb14-13a9375921a5",
+                    "id": "8e74ca65-bfd9-42ef-a9a0-f91753443629",
                     "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",

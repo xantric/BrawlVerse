@@ -41,6 +41,5 @@ public class PlayerAttackState : PlayerBaseState
                 health.TakeDamage(data.damage);
         }
     }
-
     
 }
