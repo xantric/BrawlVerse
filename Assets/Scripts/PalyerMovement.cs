@@ -26,7 +26,7 @@ public class PalyerMovement : MonoBehaviour
     private bool isDodging = false;
     public bool isRolling = false;
 
-    private Transform camTransform;
+    public Transform camTransform;
 
     bool isGrounded;
     Vector3 velocity;
@@ -38,7 +38,7 @@ public class PalyerMovement : MonoBehaviour
     {
         _rootBone = _animator.GetBoneTransform(HumanBodyBones.Hips);
         _initialRootPosition = _rootBone.position;
-        camTransform = Camera.main.transform;
+        //camTransform = Camera.main.transform;
     }
     // Update is called once per frame
     void Update()
