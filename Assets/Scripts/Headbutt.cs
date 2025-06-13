@@ -11,14 +11,19 @@ public class Headbutt : MonoBehaviour
     [Header("References")]
     public Transform attackOrigin;
     public LayerMask enemyLayer;
-    
+
     private float nextAttackTime;
     private Animator animator;
     private bool isHeadbutting = false;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
+        // Fix: Get Animator from parent instead of self
+        animator = GetComponentInParent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogError("Animator not found in parent! Headbutt animation won't play.");
+        }
     }
 
     void Update()
@@ -32,7 +37,7 @@ public class Headbutt : MonoBehaviour
     void StartHeadbutt()
     {
         isHeadbutting = true;
-        animator.SetBool("IsHeadbutting", true);
+        animator.SetBool("isHeadbutting", true); // Make sure casing matches Animator exactly
         nextAttackTime = Time.time + cooldown;
     }
 
@@ -54,7 +59,7 @@ public class Headbutt : MonoBehaviour
     public void EndHeadbutt()
     {
         isHeadbutting = false;
-        animator.SetBool("IsHeadbutting", false);
+        animator.SetBool("isHeadbutting", false);
     }
 
     void OnDrawGizmosSelected()
