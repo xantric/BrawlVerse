@@ -9,6 +9,8 @@ public class AttackData : ScriptableObject
     public float range;
     public float cooldown;
     public AnimationClip animation;
+    public float pushForce = 5f; // set in your AttackData asset or prefab
+
     public string AttackOriginName;
     //public GameObject attackOrigin;
 }
