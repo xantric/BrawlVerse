@@ -72,7 +72,7 @@ using UnityEngine.InputSystem.Utilities;
 /// }
 /// </code>
 /// </example>
-public partial class PlayerControls: IInputActionCollection2, IDisposable
+public partial class @PlayerControls: IInputActionCollection2, IDisposable
 {
     /// <summary>
     /// Provides access to the underlying asset instance.
@@ -339,6 +339,33 @@ public partial class PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Stomp"",
+                    ""type"": ""Button"",
+                    ""id"": ""a06507ac-6e5d-4fa1-9277-3df555d719b6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Uppercut"",
+                    ""type"": ""Button"",
+                    ""id"": ""e540ddc9-3618-4b73-90a9-00813ce7abc5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Button"",
+                    ""id"": ""4decd822-e751-4338-a2f6-d56faaca27b3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -388,12 +415,34 @@ public partial class PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""07836632-f09c-447c-ba55-75f0312d928d"",
-                    ""path"": """",
+                    ""id"": ""b7b378c1-0dae-4b19-878a-743d031e9e50"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Push"",
+                    ""action"": ""Stomp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""545b18f0-20f0-4f31-b574-58afd5c5bd6e"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Uppercut"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7431dd09-83f9-49e7-9c09-72b7ed73abbf"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -412,6 +461,9 @@ public partial class PlayerControls: IInputActionCollection2, IDisposable
         m_Attack_Headbutt = m_Attack.FindAction("Headbutt", throwIfNotFound: true);
         m_Attack_Kick = m_Attack.FindAction("Kick", throwIfNotFound: true);
         m_Attack_Push = m_Attack.FindAction("Push", throwIfNotFound: true);
+        m_Attack_Stomp = m_Attack.FindAction("Stomp", throwIfNotFound: true);
+        m_Attack_Uppercut = m_Attack.FindAction("Uppercut", throwIfNotFound: true);
+        m_Attack_Newaction = m_Attack.FindAction("New action", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -614,6 +666,9 @@ public partial class PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Attack_Headbutt;
     private readonly InputAction m_Attack_Kick;
     private readonly InputAction m_Attack_Push;
+    private readonly InputAction m_Attack_Stomp;
+    private readonly InputAction m_Attack_Uppercut;
+    private readonly InputAction m_Attack_Newaction;
     /// <summary>
     /// Provides access to input actions defined in input action map "Attack".
     /// </summary>
@@ -633,9 +688,22 @@ public partial class PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Attack/Kick".
         /// </summary>
         public InputAction @Kick => m_Wrapper.m_Attack_Kick;
+        /// <summary>
         /// Provides access to the underlying input action "Attack/Push".
         /// </summary>
         public InputAction @Push => m_Wrapper.m_Attack_Push;
+        /// <summary>
+        /// Provides access to the underlying input action "Attack/Stomp".
+        /// </summary>
+        public InputAction @Stomp => m_Wrapper.m_Attack_Stomp;
+        /// <summary>
+        /// Provides access to the underlying input action "Attack/Uppercut".
+        /// </summary>
+        public InputAction @Uppercut => m_Wrapper.m_Attack_Uppercut;
+        /// <summary>
+        /// Provides access to the underlying input action "Attack/Newaction".
+        /// </summary>
+        public InputAction @Newaction => m_Wrapper.m_Attack_Newaction;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -671,6 +739,15 @@ public partial class PlayerControls: IInputActionCollection2, IDisposable
             @Push.started += instance.OnPush;
             @Push.performed += instance.OnPush;
             @Push.canceled += instance.OnPush;
+            @Stomp.started += instance.OnStomp;
+            @Stomp.performed += instance.OnStomp;
+            @Stomp.canceled += instance.OnStomp;
+            @Uppercut.started += instance.OnUppercut;
+            @Uppercut.performed += instance.OnUppercut;
+            @Uppercut.canceled += instance.OnUppercut;
+            @Newaction.started += instance.OnNewaction;
+            @Newaction.performed += instance.OnNewaction;
+            @Newaction.canceled += instance.OnNewaction;
         }
 
         /// <summary>
@@ -691,6 +768,15 @@ public partial class PlayerControls: IInputActionCollection2, IDisposable
             @Push.started -= instance.OnPush;
             @Push.performed -= instance.OnPush;
             @Push.canceled -= instance.OnPush;
+            @Stomp.started -= instance.OnStomp;
+            @Stomp.performed -= instance.OnStomp;
+            @Stomp.canceled -= instance.OnStomp;
+            @Uppercut.started -= instance.OnUppercut;
+            @Uppercut.performed -= instance.OnUppercut;
+            @Uppercut.canceled -= instance.OnUppercut;
+            @Newaction.started -= instance.OnNewaction;
+            @Newaction.performed -= instance.OnNewaction;
+            @Newaction.canceled -= instance.OnNewaction;
         }
 
         /// <summary>
@@ -769,12 +855,38 @@ public partial class PlayerControls: IInputActionCollection2, IDisposable
         void OnHeadbutt(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Kick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// Method invoked when associated input action "Push" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnKick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Push" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPush(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Stomp" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnStomp(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Uppercut" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUppercut(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnNewaction(InputAction.CallbackContext context);
     }
 }

@@ -9,7 +9,7 @@ public class GizmoDraw : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         // Visualize the grab radius
-        Gizmos.color = Color.cyan;
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(origin.position, range);
     }
 }

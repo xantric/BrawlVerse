@@ -97,6 +97,7 @@ public class PlayerStateMachine : MonoBehaviour
     }
     private void OnAttackInput(AttackData atk)
     {
+        Debug.Log("Hello");
         if (Time.time >= cooldowns[atk.inputActionName])
         {
             cooldowns[atk.inputActionName] = Time.time + atk.cooldown;
