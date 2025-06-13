@@ -314,7 +314,16 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ""id"": ""d86cb8c7-afda-482d-a061-dd08d04a1a77"",
             ""actions"": [
                 {
-                    ""name"": ""Melee"",
+                    ""name"": ""Kick"",
+                    ""type"": ""Button"",
+                    ""id"": ""6dbeb2dc-b8e0-4845-9111-719a2c82386c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Headbutt"",
                     ""type"": ""Button"",
                     ""id"": ""53a7693b-3001-4d7c-ab05-d16ec91ce070"",
                     ""expectedControlType"": """",
@@ -327,11 +336,33 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""72308197-3167-4faa-baa4-cb0213afd6b6"",
-                    ""path"": """",
+                    ""path"": ""<Keyboard>/t"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Melee"",
+                    ""action"": ""Headbutt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f9435582-4877-43db-b6a9-7ba1d594407a"",
+                    ""path"": ""<XInputController>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Headbutt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a526198f-664e-4d89-bb14-13a9375921a5"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Kick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -347,7 +378,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
         // Attack
         m_Attack = asset.FindActionMap("Attack", throwIfNotFound: true);
-        m_Attack_Melee = m_Attack.FindAction("Melee", throwIfNotFound: true);
+        m_Attack_Kick = m_Attack.FindAction("Kick", throwIfNotFound: true);
+        m_Attack_Headbutt = m_Attack.FindAction("Headbutt", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -547,7 +579,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     // Attack
     private readonly InputActionMap m_Attack;
     private List<IAttackActions> m_AttackActionsCallbackInterfaces = new List<IAttackActions>();
-    private readonly InputAction m_Attack_Melee;
+    private readonly InputAction m_Attack_Kick;
+    private readonly InputAction m_Attack_Headbutt;
     /// <summary>
     /// Provides access to input actions defined in input action map "Attack".
     /// </summary>
@@ -560,9 +593,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// </summary>
         public AttackActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Attack/Melee".
+        /// Provides access to the underlying input action "Attack/Kick".
         /// </summary>
-        public InputAction @Melee => m_Wrapper.m_Attack_Melee;
+        public InputAction @Kick => m_Wrapper.m_Attack_Kick;
+        /// <summary>
+        /// Provides access to the underlying input action "Attack/Headbutt".
+        /// </summary>
+        public InputAction @Headbutt => m_Wrapper.m_Attack_Headbutt;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -589,9 +626,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_AttackActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_AttackActionsCallbackInterfaces.Add(instance);
-            @Melee.started += instance.OnMelee;
-            @Melee.performed += instance.OnMelee;
-            @Melee.canceled += instance.OnMelee;
+            @Kick.started += instance.OnKick;
+            @Kick.performed += instance.OnKick;
+            @Kick.canceled += instance.OnKick;
+            @Headbutt.started += instance.OnHeadbutt;
+            @Headbutt.performed += instance.OnHeadbutt;
+            @Headbutt.canceled += instance.OnHeadbutt;
         }
 
         /// <summary>
@@ -603,9 +643,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="AttackActions" />
         private void UnregisterCallbacks(IAttackActions instance)
         {
-            @Melee.started -= instance.OnMelee;
-            @Melee.performed -= instance.OnMelee;
-            @Melee.canceled -= instance.OnMelee;
+            @Kick.started -= instance.OnKick;
+            @Kick.performed -= instance.OnKick;
+            @Kick.canceled -= instance.OnKick;
+            @Headbutt.started -= instance.OnHeadbutt;
+            @Headbutt.performed -= instance.OnHeadbutt;
+            @Headbutt.canceled -= instance.OnHeadbutt;
         }
 
         /// <summary>
@@ -676,11 +719,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IAttackActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Melee" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Kick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnMelee(InputAction.CallbackContext context);
+        void OnKick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Headbutt" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHeadbutt(InputAction.CallbackContext context);
     }
 }

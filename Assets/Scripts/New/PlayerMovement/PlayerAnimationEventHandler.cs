@@ -9,4 +9,13 @@ public class PlayerAnimationEventHandler : MonoBehaviour
     {
         _playerStateMachine.ApplyJumpVelocity();
     }
+
+    public void ApplyAttackDamageEvent()
+    {
+        _playerStateMachine.ApplyAttackDamage();
+    }
+    public void EndAttackAnimationEvent()
+    {
+        _playerStateMachine.EndAttack();
+    }
 }

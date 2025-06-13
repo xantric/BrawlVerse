@@ -228,7 +228,16 @@
             "id": "d86cb8c7-afda-482d-a061-dd08d04a1a77",
             "actions": [
                 {
-                    "name": "Melee",
+                    "name": "Kick",
+                    "type": "Button",
+                    "id": "6dbeb2dc-b8e0-4845-9111-719a2c82386c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Headbutt",
                     "type": "Button",
                     "id": "53a7693b-3001-4d7c-ab05-d16ec91ce070",
                     "expectedControlType": "",
@@ -241,11 +250,33 @@
                 {
                     "name": "",
                     "id": "72308197-3167-4faa-baa4-cb0213afd6b6",
-                    "path": "",
+                    "path": "<Keyboard>/t",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Melee",
+                    "action": "Headbutt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f9435582-4877-43db-b6a9-7ba1d594407a",
+                    "path": "<XInputController>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Headbutt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a526198f-664e-4d89-bb14-13a9375921a5",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Kick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
