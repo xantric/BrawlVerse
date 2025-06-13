@@ -27,20 +27,27 @@ public class PlayerAttackState : PlayerBaseState
         ctx.animator.SetBool("IsAttacking", false);
     }
     public void ApplyDamage()
+{
+    if (!ctx.attackOriginMap.TryGetValue(data.AttackOriginName, out var origin))
     {
-        if (!ctx.attackOriginMap.TryGetValue(data.AttackOriginName, out var origin))
-        {
-            Debug.LogWarning($"No attack origin found for '{data.AttackOriginName}'. Using player transform as fallback.");
-            origin = ctx.transform;
-        }
-
-        Collider[] hits = Physics.OverlapSphere(origin.position, data.range, ctx.EnemyLayer);
-        foreach (var hit in hits)
-        {
-            if (hit.TryGetComponent<EnemyHealth>(out var health))
-                health.TakeDamage(data.damage);
-        }
+        Debug.LogWarning($"No attack origin found for '{data.AttackOriginName}'. Using player transform as fallback.");
+        origin = ctx.transform;
     }
 
-    
+    Collider[] hits = Physics.OverlapSphere(origin.position, data.range, ctx.EnemyLayer);
+    foreach (var hit in hits)
+    {
+        // Apply damage
+        if (hit.TryGetComponent<EnemyHealth>(out var health))
+            health.TakeDamage(data.damage);
+
+        // Apply force if it has Rigidbody
+        if (hit.attachedRigidbody != null)
+        {
+            Vector3 pushDir = (hit.transform.position - origin.position).normalized;
+            hit.attachedRigidbody.AddForce(pushDir * data.pushForce, ForceMode.Impulse);
+        }
+    }
+}
+
 }

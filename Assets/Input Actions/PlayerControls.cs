@@ -72,7 +72,7 @@ using UnityEngine.InputSystem.Utilities;
 /// }
 /// </code>
 /// </example>
-public partial class @PlayerControls: IInputActionCollection2, IDisposable
+public partial class PlayerControls: IInputActionCollection2, IDisposable
 {
     /// <summary>
     /// Provides access to the underlying asset instance.
@@ -93,9 +93,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Keyboard"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""8a8862e4-9de5-4c89-832b-f4705a1591e7"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -330,6 +330,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Push"",
+                    ""type"": ""Button"",
+                    ""id"": ""64b937e4-c683-485d-b47c-334ab288deff"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -365,6 +374,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Kick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""32e8c0fc-41b6-4bf8-8f71-90594d51aae0"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Push"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""07836632-f09c-447c-ba55-75f0312d928d"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Push"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -380,6 +411,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Attack = asset.FindActionMap("Attack", throwIfNotFound: true);
         m_Attack_Kick = m_Attack.FindAction("Kick", throwIfNotFound: true);
         m_Attack_Headbutt = m_Attack.FindAction("Headbutt", throwIfNotFound: true);
+        m_Attack_Push = m_Attack.FindAction("Push", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -581,6 +613,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private List<IAttackActions> m_AttackActionsCallbackInterfaces = new List<IAttackActions>();
     private readonly InputAction m_Attack_Kick;
     private readonly InputAction m_Attack_Headbutt;
+    private readonly InputAction m_Attack_Push;
     /// <summary>
     /// Provides access to input actions defined in input action map "Attack".
     /// </summary>
@@ -600,6 +633,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Attack/Headbutt".
         /// </summary>
         public InputAction @Headbutt => m_Wrapper.m_Attack_Headbutt;
+        /// <summary>
+        /// Provides access to the underlying input action "Attack/Push".
+        /// </summary>
+        public InputAction @Push => m_Wrapper.m_Attack_Push;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -632,6 +669,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Headbutt.started += instance.OnHeadbutt;
             @Headbutt.performed += instance.OnHeadbutt;
             @Headbutt.canceled += instance.OnHeadbutt;
+            @Push.started += instance.OnPush;
+            @Push.performed += instance.OnPush;
+            @Push.canceled += instance.OnPush;
         }
 
         /// <summary>
@@ -649,6 +689,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Headbutt.started -= instance.OnHeadbutt;
             @Headbutt.performed -= instance.OnHeadbutt;
             @Headbutt.canceled -= instance.OnHeadbutt;
+            @Push.started -= instance.OnPush;
+            @Push.performed -= instance.OnPush;
+            @Push.canceled -= instance.OnPush;
         }
 
         /// <summary>
@@ -732,5 +775,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHeadbutt(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Push" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPush(InputAction.CallbackContext context);
     }
 }
