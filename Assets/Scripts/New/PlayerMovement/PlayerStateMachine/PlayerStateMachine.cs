@@ -70,10 +70,11 @@ public class PlayerStateMachine : MonoBehaviour
 
     [Header("!!Testing_Parry!!")]
     //temp variables for parry
-    
     public bool isBlockHeld;
-    public bool wasBlockHeldBeforeParryWindow;
-
+    public bool isBlockJustPressed;
+    public bool isParryWindowOpen = false;
+    private float parryWindowStartTime;
+    private float parryWindowDuration = 0.5f;
 
 
     private PlayerBaseState currentState;
@@ -142,14 +143,14 @@ public class PlayerStateMachine : MonoBehaviour
         _playerControls.Parry.Parry.performed += ctx =>
         {
             isBlockHeld = true;
-            wasBlockHeldBeforeParryWindow = true;
+            isBlockJustPressed = true;
         };
         _playerControls.Parry.Parry.canceled += ctx =>
         {
             isBlockHeld = false;
         };
     }
-
+    
     void OnGrabPressed(InputAction.CallbackContext ctx)
     {
         isGrabbing = ctx.ReadValueAsButton();
@@ -185,7 +186,33 @@ public class PlayerStateMachine : MonoBehaviour
             currentState.HandleJumpInput();
             isJumpPressed = false;
         }
+        /*see this*/
+       
+        if (isParryWindowOpen)
+        {
+            float elapsed = Time.time - parryWindowStartTime;
 
+            if (elapsed > parryWindowDuration)
+            {
+                isParryWindowOpen = false;
+            }
+            else if (isBlockJustPressed)
+            {
+                
+                Debug.Log("Perfect parry!");
+                SwitchState(stateFactory.ParrySub());
+                isParryWindowOpen = false;
+            }
+            else if (isBlockHeld)
+            {
+                
+                Debug.Log("Blocking — parry not triggered");
+            }
+        }
+
+        isBlockJustPressed = false;
+
+       
     }
 
     public void SwitchState(PlayerBaseState newState)

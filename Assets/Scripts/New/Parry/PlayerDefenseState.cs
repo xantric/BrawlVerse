@@ -9,9 +9,9 @@ public class PlayerDefenseState : PlayerBaseState
     }
     public override void EnterState()
     {
-        if (ctx.wasBlockHeldBeforeParryWindow)
+        if (ctx.isParryWindowOpen && ctx.isBlockJustPressed)
         {
-            ctx.wasBlockHeldBeforeParryWindow = false;
+            ctx.isParryWindowOpen = false;
             SetSubState(factory.ParrySub());
         }
         else

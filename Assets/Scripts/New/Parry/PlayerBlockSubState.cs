@@ -7,6 +7,7 @@ public class PlayerBlockSubState : PlayerBaseState
     public override void EnterState()
     {
         ctx.animator.SetBool("IsDefending", true);
+        Debug.Log("Blocking.....");
     }
     public override void UpdateState()
     {
