@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
@@ -42,6 +43,23 @@ public class PlayerStateMachine : MonoBehaviour
     private Dictionary<string, AttackData> attackMap;
     private Dictionary<string, float> cooldowns;
 
+    [Header("Grab Parameters")]
+    public float grabRadius = 1.2f;
+    public float grabDuration = 2.5f;
+    public float grabCooldown = 10f;
+    public LayerMask pushableLayer;
+    public Transform grabPoint;
+    [HideInInspector] public float grabCooldownTimer = 0f;
+    private bool isGrabbing = false;
+
+    [Header("Power Ups")]
+    public GameObject bubbleShieldEffect;
+    public bool isShieldActive = false;
+    public float bubbleShieldDuration = 10f;
+    public float airPullDistance = 10f;
+    public float airPullDuration = 0.4f;
+    [HideInInspector] public bool isDashing = false;
+
     [Header("Inputs")]
     // public variables for classes
     public Vector2 moveInput;
@@ -54,11 +72,10 @@ public class PlayerStateMachine : MonoBehaviour
     private PlayerBaseState currentState;
     private PlayerStateFactory stateFactory;
 
+    // ------------------------ Awake method ---------------------------
     void Awake()
     {
         InitializeControls();
-        
-        
         cam = Camera.main;
 
         runtimeOverride = new AnimatorOverrideController(baseOverrideController);
@@ -72,6 +89,7 @@ public class PlayerStateMachine : MonoBehaviour
         currentState.EnterState();
         
     }
+    // ----------------- Setting up attack Maps -----------------------------
     void SetUpAttackMaps()
     {
         attackMap = new Dictionary<string, AttackData>();
@@ -95,9 +113,10 @@ public class PlayerStateMachine : MonoBehaviour
                 attackOriginMap[entry.originName] = entry.originTransform;
         }
     }
+    // -------------------------- Attack Input manager -------------------------------
     private void OnAttackInput(AttackData atk)
     {
-        Debug.Log("Hello");
+        //Debug.Log("Hello");
         if (Time.time >= cooldowns[atk.inputActionName])
         {
             cooldowns[atk.inputActionName] = Time.time + atk.cooldown;
@@ -105,26 +124,34 @@ public class PlayerStateMachine : MonoBehaviour
         }
     }
 
-    // Initialize controls
+    //----------------------------------- Initialize controls -------------------------------------------
     void InitializeControls()
     {
         _playerControls = new PlayerControls();
-        _playerControls.Movement.Keyboard.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        _playerControls.Movement.Keyboard.canceled += ctx => moveInput = Vector2.zero;
         _playerControls.Movement.Jump.performed += ctx => isJumpPressed = true;
-        _playerControls.Attack.Headbutt.performed += OnHeadbuttPressed;
-        
+        _playerControls.Grab.GrabMouse.performed += OnGrabPressed;
+        _playerControls.PowerUps.Shield.performed += ActivateShield;
+        _playerControls.PowerUps.PullThroughAir.performed += ActivatePullThroughAir;
     }
 
-    void OnHeadbuttPressed(InputAction.CallbackContext ctx)
+    void OnGrabPressed(InputAction.CallbackContext ctx)
     {
-        isAttacking = ctx.ReadValueAsButton();
-        if (isAttacking)
+        isGrabbing = ctx.ReadValueAsButton();
+        if (isGrabbing)
         {
-            //SwitchState(stateFactory.Headbutt());
+            SwitchState(stateFactory.Grab());
         }
 
     }
+    void ActivateShield(InputAction.CallbackContext ctx)
+    {
+        SwitchState(stateFactory.PowerUp(PowerUpType.BubbleShield,bubbleShieldDuration));
+    }
+    void ActivatePullThroughAir(InputAction.CallbackContext ctx)
+    {
+        SwitchState(stateFactory.PowerUp(PowerUpType.PullThroughAir, airPullDuration));
+    }
+    
 
     void OnEnable() => _playerControls.Enable();
     void OnDisable() => _playerControls.Disable();
@@ -136,7 +163,7 @@ public class PlayerStateMachine : MonoBehaviour
         ApplyGravity();
         HandleRotation();
         currentState.UpdateState();
-
+        moveInput = _playerControls.Movement.Keyboard.ReadValue<Vector2>();
         if (isJumpPressed)
         {
             currentState.HandleJumpInput();
@@ -152,12 +179,17 @@ public class PlayerStateMachine : MonoBehaviour
         newState.EnterState();
     }
     
-    void HandleRotation()
+    // ------------------ Basic physics and camera -------------------------------
+    public void HandleRotation()
     {
+        
         Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
-        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
-        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, TurnVelocity);
-        transform.rotation = Quaternion.Euler(0f, angle, 0f);
+        if (direction.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, TurnVelocity);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+        }
     }
 
     public Vector3 GetMoveDirection(Vector3 direction)
@@ -180,9 +212,8 @@ public class PlayerStateMachine : MonoBehaviour
         characterController.Move(velocity * Time.deltaTime);
     }
 
-    public void SetAttackActive(bool active) { isAttacking = active; }
 
-    // Animation Events Refrences
+    //--------------------------- Animation Events Refrences ------------------------------------
     public void ApplyJumpVelocity()
     {
         velocity.y = Mathf.Sqrt(-2f * gravity * jumpHeight);
@@ -201,6 +232,67 @@ public class PlayerStateMachine : MonoBehaviour
     }
 
 
+    // --------------------------------------- Power Ups -------------------------------------
+    public void EnableShield(bool active)
+    {
+        isShieldActive = active;
+        if (bubbleShieldEffect != null)
+        {
+            bubbleShieldEffect.SetActive(active);
+        }
+    }
+
+    public void PullPlayerThroughAir()
+    {
+        if (isDashing) return; // Prevent overlapping
+
+        Vector3 inputDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+        if (inputDirection == Vector3.zero)
+        {
+            inputDirection = Vector3.forward;
+            
+        }
+            
+        
+        Vector3 moveDir = GetMoveDirection(inputDirection);
+        transform.rotation = Quaternion.LookRotation(moveDir);
+        StartCoroutine(PerformAirPull(moveDir));
+    }
+    private IEnumerator PerformAirPull(Vector3 direction)
+    {
+        isDashing = true;
+
+        float elapsed = 0f;
+        Vector3 start = transform.position;
+        Vector3 target = start + direction * airPullDistance;
+
+        // Disable gravity while pulling (optional)
+        bool wasGrounded = isGrounded;
+        velocity.y = 0f;
+        
+
+        while (elapsed < airPullDuration)
+        {
+            
+            float t = elapsed / airPullDuration;
+            Vector3 newPosition = Vector3.Lerp(start, target, t);
+            Vector3 delta = newPosition - transform.position;
+            characterController.Move(delta);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Final move in case of small gap
+        Vector3 finalDelta = target - transform.position;
+        characterController.Move(finalDelta);
+
+        isDashing = false;
+
+        // Restore downward velocity
+        if (!wasGrounded)
+            velocity.y = 0f;
+    }
 
 
 }

@@ -427,7 +427,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""545b18f0-20f0-4f31-b574-58afd5c5bd6e"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -443,6 +443,82 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Grab"",
+            ""id"": ""607f6756-1b70-44b4-9c45-d318acef8b21"",
+            ""actions"": [
+                {
+                    ""name"": ""GrabMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""ec268bdc-3a50-4ad1-ad05-d4d20d6380f3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""f6274f28-c313-400a-97d1-f96d7343429e"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GrabMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""PowerUps"",
+            ""id"": ""40fc2191-765f-4bee-bb01-10bc694796cc"",
+            ""actions"": [
+                {
+                    ""name"": ""Shield"",
+                    ""type"": ""Button"",
+                    ""id"": ""8fd66c6f-cd86-4d67-be9a-fb35f45e1c54"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PullThroughAir"",
+                    ""type"": ""Button"",
+                    ""id"": ""ab8a6792-47db-414e-b2bd-280b044070ab"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ff334ad5-adae-44f2-9d3f-84f4879a9760"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shield"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d87ba46e-b7da-4969-9d92-86f4d3b028b3"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PullThroughAir"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -464,12 +540,21 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Attack_Stomp = m_Attack.FindAction("Stomp", throwIfNotFound: true);
         m_Attack_Uppercut = m_Attack.FindAction("Uppercut", throwIfNotFound: true);
         m_Attack_Newaction = m_Attack.FindAction("New action", throwIfNotFound: true);
+        // Grab
+        m_Grab = asset.FindActionMap("Grab", throwIfNotFound: true);
+        m_Grab_GrabMouse = m_Grab.FindAction("GrabMouse", throwIfNotFound: true);
+        // PowerUps
+        m_PowerUps = asset.FindActionMap("PowerUps", throwIfNotFound: true);
+        m_PowerUps_Shield = m_PowerUps.FindAction("Shield", throwIfNotFound: true);
+        m_PowerUps_PullThroughAir = m_PowerUps.FindAction("PullThroughAir", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
     {
         UnityEngine.Debug.Assert(!m_Movement.enabled, "This will cause a leak and performance issues, PlayerControls.Movement.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Attack.enabled, "This will cause a leak and performance issues, PlayerControls.Attack.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Grab.enabled, "This will cause a leak and performance issues, PlayerControls.Grab.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_PowerUps.enabled, "This will cause a leak and performance issues, PlayerControls.PowerUps.Disable() has not been called.");
     }
 
     /// <summary>
@@ -810,6 +895,209 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="AttackActions" /> instance referencing this action map.
     /// </summary>
     public AttackActions @Attack => new AttackActions(this);
+
+    // Grab
+    private readonly InputActionMap m_Grab;
+    private List<IGrabActions> m_GrabActionsCallbackInterfaces = new List<IGrabActions>();
+    private readonly InputAction m_Grab_GrabMouse;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Grab".
+    /// </summary>
+    public struct GrabActions
+    {
+        private @PlayerControls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public GrabActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Grab/GrabMouse".
+        /// </summary>
+        public InputAction @GrabMouse => m_Wrapper.m_Grab_GrabMouse;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Grab; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="GrabActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(GrabActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="GrabActions" />
+        public void AddCallbacks(IGrabActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GrabActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GrabActionsCallbackInterfaces.Add(instance);
+            @GrabMouse.started += instance.OnGrabMouse;
+            @GrabMouse.performed += instance.OnGrabMouse;
+            @GrabMouse.canceled += instance.OnGrabMouse;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="GrabActions" />
+        private void UnregisterCallbacks(IGrabActions instance)
+        {
+            @GrabMouse.started -= instance.OnGrabMouse;
+            @GrabMouse.performed -= instance.OnGrabMouse;
+            @GrabMouse.canceled -= instance.OnGrabMouse;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="GrabActions.UnregisterCallbacks(IGrabActions)" />.
+        /// </summary>
+        /// <seealso cref="GrabActions.UnregisterCallbacks(IGrabActions)" />
+        public void RemoveCallbacks(IGrabActions instance)
+        {
+            if (m_Wrapper.m_GrabActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="GrabActions.AddCallbacks(IGrabActions)" />
+        /// <seealso cref="GrabActions.RemoveCallbacks(IGrabActions)" />
+        /// <seealso cref="GrabActions.UnregisterCallbacks(IGrabActions)" />
+        public void SetCallbacks(IGrabActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GrabActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GrabActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="GrabActions" /> instance referencing this action map.
+    /// </summary>
+    public GrabActions @Grab => new GrabActions(this);
+
+    // PowerUps
+    private readonly InputActionMap m_PowerUps;
+    private List<IPowerUpsActions> m_PowerUpsActionsCallbackInterfaces = new List<IPowerUpsActions>();
+    private readonly InputAction m_PowerUps_Shield;
+    private readonly InputAction m_PowerUps_PullThroughAir;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "PowerUps".
+    /// </summary>
+    public struct PowerUpsActions
+    {
+        private @PlayerControls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public PowerUpsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "PowerUps/Shield".
+        /// </summary>
+        public InputAction @Shield => m_Wrapper.m_PowerUps_Shield;
+        /// <summary>
+        /// Provides access to the underlying input action "PowerUps/PullThroughAir".
+        /// </summary>
+        public InputAction @PullThroughAir => m_Wrapper.m_PowerUps_PullThroughAir;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_PowerUps; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="PowerUpsActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(PowerUpsActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="PowerUpsActions" />
+        public void AddCallbacks(IPowerUpsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PowerUpsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PowerUpsActionsCallbackInterfaces.Add(instance);
+            @Shield.started += instance.OnShield;
+            @Shield.performed += instance.OnShield;
+            @Shield.canceled += instance.OnShield;
+            @PullThroughAir.started += instance.OnPullThroughAir;
+            @PullThroughAir.performed += instance.OnPullThroughAir;
+            @PullThroughAir.canceled += instance.OnPullThroughAir;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="PowerUpsActions" />
+        private void UnregisterCallbacks(IPowerUpsActions instance)
+        {
+            @Shield.started -= instance.OnShield;
+            @Shield.performed -= instance.OnShield;
+            @Shield.canceled -= instance.OnShield;
+            @PullThroughAir.started -= instance.OnPullThroughAir;
+            @PullThroughAir.performed -= instance.OnPullThroughAir;
+            @PullThroughAir.canceled -= instance.OnPullThroughAir;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PowerUpsActions.UnregisterCallbacks(IPowerUpsActions)" />.
+        /// </summary>
+        /// <seealso cref="PowerUpsActions.UnregisterCallbacks(IPowerUpsActions)" />
+        public void RemoveCallbacks(IPowerUpsActions instance)
+        {
+            if (m_Wrapper.m_PowerUpsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="PowerUpsActions.AddCallbacks(IPowerUpsActions)" />
+        /// <seealso cref="PowerUpsActions.RemoveCallbacks(IPowerUpsActions)" />
+        /// <seealso cref="PowerUpsActions.UnregisterCallbacks(IPowerUpsActions)" />
+        public void SetCallbacks(IPowerUpsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PowerUpsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PowerUpsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="PowerUpsActions" /> instance referencing this action map.
+    /// </summary>
+    public PowerUpsActions @PowerUps => new PowerUpsActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Movement" which allows adding and removing callbacks.
     /// </summary>
@@ -888,5 +1176,42 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnNewaction(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Grab" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="GrabActions.AddCallbacks(IGrabActions)" />
+    /// <seealso cref="GrabActions.RemoveCallbacks(IGrabActions)" />
+    public interface IGrabActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "GrabMouse" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnGrabMouse(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PowerUps" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="PowerUpsActions.AddCallbacks(IPowerUpsActions)" />
+    /// <seealso cref="PowerUpsActions.RemoveCallbacks(IPowerUpsActions)" />
+    public interface IPowerUpsActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Shield" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShield(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PullThroughAir" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPullThroughAir(InputAction.CallbackContext context);
     }
 }

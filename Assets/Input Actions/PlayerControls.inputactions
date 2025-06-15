@@ -341,7 +341,7 @@
                 {
                     "name": "",
                     "id": "545b18f0-20f0-4f31-b574-58afd5c5bd6e",
-                    "path": "<Keyboard>/e",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -357,6 +357,82 @@
                     "processors": "",
                     "groups": "",
                     "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Grab",
+            "id": "607f6756-1b70-44b4-9c45-d318acef8b21",
+            "actions": [
+                {
+                    "name": "GrabMouse",
+                    "type": "Button",
+                    "id": "ec268bdc-3a50-4ad1-ad05-d4d20d6380f3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f6274f28-c313-400a-97d1-f96d7343429e",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrabMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "PowerUps",
+            "id": "40fc2191-765f-4bee-bb01-10bc694796cc",
+            "actions": [
+                {
+                    "name": "Shield",
+                    "type": "Button",
+                    "id": "8fd66c6f-cd86-4d67-be9a-fb35f45e1c54",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PullThroughAir",
+                    "type": "Button",
+                    "id": "ab8a6792-47db-414e-b2bd-280b044070ab",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ff334ad5-adae-44f2-9d3f-84f4879a9760",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shield",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d87ba46e-b7da-4969-9d92-86f4d3b028b3",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PullThroughAir",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

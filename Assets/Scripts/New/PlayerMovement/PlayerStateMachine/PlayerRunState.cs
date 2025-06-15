@@ -11,6 +11,9 @@ public class PlayerRunState : PlayerBaseState
 
     public override void UpdateState()
     {
+        if (ctx.isDashing)
+            return; // Skip movement
+
         Vector3 direction = new Vector3(ctx.moveInput.x, 0f, ctx.moveInput.y).normalized;
         Vector3 moveDir = ctx.GetMoveDirection(direction);
         //ctx.RotateTowardsMovementDirection(moveDir);

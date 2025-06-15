@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackName: Uppercut
   inputActionName: Uppercut
-  damage: 13
-  range: 0.5
-  cooldown: 0.5
+  damage: 10
+  range: 0.6
+  cooldown: 0.1
   animation: {fileID: 7400000, guid: 88a5bc7f269041b4595ea5f453d23ba0, type: 2}
-  pushForce: 10
+  pushForce: 12
   AttackOriginName: Uppercut

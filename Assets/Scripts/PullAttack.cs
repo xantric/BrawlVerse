@@ -29,10 +29,10 @@ public class PullAttack : MonoBehaviour
             Transform enemy = enemyCollider.transform;
             
             // Apply damage if Enemy script present
-            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            EnemyHealth enemyScript = enemy.GetComponent<EnemyHealth>();
             if (enemyScript != null)
             {
-                enemyScript.TakeDamage(damageAmount);
+                enemyScript.TakeDamage(10);
             }
 
             // Start coroutine to smoothly pull enemy
