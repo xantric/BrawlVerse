@@ -68,6 +68,13 @@ public class PlayerStateMachine : MonoBehaviour
     public bool isGrounded;
     public bool isAttacking;
 
+    [Header("!!Testing_Parry!!")]
+    //temp variables for parry
+    
+    public bool isBlockHeld;
+    public bool wasBlockHeldBeforeParryWindow;
+
+
 
     private PlayerBaseState currentState;
     private PlayerStateFactory stateFactory;
@@ -132,6 +139,15 @@ public class PlayerStateMachine : MonoBehaviour
         _playerControls.Grab.GrabMouse.performed += OnGrabPressed;
         _playerControls.PowerUps.Shield.performed += ActivateShield;
         _playerControls.PowerUps.PullThroughAir.performed += ActivatePullThroughAir;
+        _playerControls.Parry.Parry.performed += ctx =>
+        {
+            isBlockHeld = true;
+            wasBlockHeldBeforeParryWindow = true;
+        };
+        _playerControls.Parry.Parry.canceled += ctx =>
+        {
+            isBlockHeld = false;
+        };
     }
 
     void OnGrabPressed(InputAction.CallbackContext ctx)

@@ -523,6 +523,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Parry"",
+            ""id"": ""0653d178-6d6b-4d4c-904f-49bf6ac41648"",
+            ""actions"": [
+                {
+                    ""name"": ""Parry"",
+                    ""type"": ""Button"",
+                    ""id"": ""d63a7c7a-65d8-40b4-a0d4-55c05cbd6d8e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""44e2a12a-e8ea-49f1-aa55-74f5d0af6d5b"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Parry"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -547,6 +575,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_PowerUps = asset.FindActionMap("PowerUps", throwIfNotFound: true);
         m_PowerUps_Shield = m_PowerUps.FindAction("Shield", throwIfNotFound: true);
         m_PowerUps_PullThroughAir = m_PowerUps.FindAction("PullThroughAir", throwIfNotFound: true);
+        // Parry
+        m_Parry = asset.FindActionMap("Parry", throwIfNotFound: true);
+        m_Parry_Parry = m_Parry.FindAction("Parry", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -555,6 +586,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Attack.enabled, "This will cause a leak and performance issues, PlayerControls.Attack.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Grab.enabled, "This will cause a leak and performance issues, PlayerControls.Grab.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_PowerUps.enabled, "This will cause a leak and performance issues, PlayerControls.PowerUps.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Parry.enabled, "This will cause a leak and performance issues, PlayerControls.Parry.Disable() has not been called.");
     }
 
     /// <summary>
@@ -1098,6 +1130,102 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="PowerUpsActions" /> instance referencing this action map.
     /// </summary>
     public PowerUpsActions @PowerUps => new PowerUpsActions(this);
+
+    // Parry
+    private readonly InputActionMap m_Parry;
+    private List<IParryActions> m_ParryActionsCallbackInterfaces = new List<IParryActions>();
+    private readonly InputAction m_Parry_Parry;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Parry".
+    /// </summary>
+    public struct ParryActions
+    {
+        private @PlayerControls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public ParryActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Parry/Parry".
+        /// </summary>
+        public InputAction @Parry => m_Wrapper.m_Parry_Parry;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Parry; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="ParryActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(ParryActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="ParryActions" />
+        public void AddCallbacks(IParryActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ParryActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ParryActionsCallbackInterfaces.Add(instance);
+            @Parry.started += instance.OnParry;
+            @Parry.performed += instance.OnParry;
+            @Parry.canceled += instance.OnParry;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="ParryActions" />
+        private void UnregisterCallbacks(IParryActions instance)
+        {
+            @Parry.started -= instance.OnParry;
+            @Parry.performed -= instance.OnParry;
+            @Parry.canceled -= instance.OnParry;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ParryActions.UnregisterCallbacks(IParryActions)" />.
+        /// </summary>
+        /// <seealso cref="ParryActions.UnregisterCallbacks(IParryActions)" />
+        public void RemoveCallbacks(IParryActions instance)
+        {
+            if (m_Wrapper.m_ParryActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="ParryActions.AddCallbacks(IParryActions)" />
+        /// <seealso cref="ParryActions.RemoveCallbacks(IParryActions)" />
+        /// <seealso cref="ParryActions.UnregisterCallbacks(IParryActions)" />
+        public void SetCallbacks(IParryActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ParryActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ParryActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="ParryActions" /> instance referencing this action map.
+    /// </summary>
+    public ParryActions @Parry => new ParryActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Movement" which allows adding and removing callbacks.
     /// </summary>
@@ -1213,5 +1341,20 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPullThroughAir(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Parry" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="ParryActions.AddCallbacks(IParryActions)" />
+    /// <seealso cref="ParryActions.RemoveCallbacks(IParryActions)" />
+    public interface IParryActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Parry" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnParry(InputAction.CallbackContext context);
     }
 }
