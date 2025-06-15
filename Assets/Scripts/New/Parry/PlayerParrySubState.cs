@@ -11,7 +11,7 @@ public class PlayerParrySubState : PlayerBaseState
     public override void EnterState()
     {
         startTime = Time.time;
-        ctx.animator.SetTrigger("Parry");
+        ctx.animator.SetBool("IsDefending", true);
         Debug.Log("Parry window opened");
     }
 

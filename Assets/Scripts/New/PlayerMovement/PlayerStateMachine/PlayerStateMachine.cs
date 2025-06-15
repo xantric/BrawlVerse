@@ -144,6 +144,10 @@ public class PlayerStateMachine : MonoBehaviour
         {
             isBlockHeld = true;
             isBlockJustPressed = true;
+            if (!(currentState is PlayerDefenseState))
+            {
+                SwitchState(stateFactory.Defense());
+            }
         };
         _playerControls.Parry.Parry.canceled += ctx =>
         {

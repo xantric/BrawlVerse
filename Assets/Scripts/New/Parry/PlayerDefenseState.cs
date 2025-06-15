@@ -14,7 +14,7 @@ public class PlayerDefenseState : PlayerBaseState
             ctx.isParryWindowOpen = false;
             SetSubState(factory.ParrySub());
         }
-        else
+        else //if (ctx.isBlockHeld || ctx.isBlockJustPressed)
         {
             SetSubState(factory.BlockSub());
         }
