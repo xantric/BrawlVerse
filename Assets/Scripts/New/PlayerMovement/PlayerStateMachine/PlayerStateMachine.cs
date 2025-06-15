@@ -68,14 +68,15 @@ public class PlayerStateMachine : MonoBehaviour
     public bool isGrounded;
     public bool isAttacking;
 
+    /*----------------------------------------------------------------*/
     [Header("!!Testing_Parry!!")]
     //temp variables for parry
     public bool isBlockHeld;
     public bool isBlockJustPressed;
     public bool isParryWindowOpen = false;
     private float parryWindowStartTime;
-    private float parryWindowDuration = 0.5f;
-
+    [SerializeField]private float parryWindowDuration = 0.5f;
+    /*----------------------------------------------------------------*/
 
     private PlayerBaseState currentState;
     private PlayerStateFactory stateFactory;
@@ -140,6 +141,7 @@ public class PlayerStateMachine : MonoBehaviour
         _playerControls.Grab.GrabMouse.performed += OnGrabPressed;
         _playerControls.PowerUps.Shield.performed += ActivateShield;
         _playerControls.PowerUps.PullThroughAir.performed += ActivatePullThroughAir;
+        /*-------------------------------------------------------------------*/
         _playerControls.Parry.Parry.performed += ctx =>
         {
             isBlockHeld = true;
@@ -153,8 +155,18 @@ public class PlayerStateMachine : MonoBehaviour
         {
             isBlockHeld = false;
         };
+        /*-------------------------------------------------------------------*/
     }
-    
+    /*------------------------------------------------------------------*/
+    public void TriggerParryWindow()
+    {
+        parryWindowStartTime = Time.time;
+        isParryWindowOpen = true;
+        
+
+        Debug.Log("Parry window triggered.");
+    }
+    /*-------------------------------------------------------------------*/
     void OnGrabPressed(InputAction.CallbackContext ctx)
     {
         isGrabbing = ctx.ReadValueAsButton();
@@ -190,8 +202,7 @@ public class PlayerStateMachine : MonoBehaviour
             currentState.HandleJumpInput();
             isJumpPressed = false;
         }
-        /*see this*/
-       
+        /*---------------------------------------------------------------------------*/
         if (isParryWindowOpen)
         {
             float elapsed = Time.time - parryWindowStartTime;
@@ -215,7 +226,7 @@ public class PlayerStateMachine : MonoBehaviour
         }
 
         isBlockJustPressed = false;
-
+        /*----------------------------------------------------------------------------*/
        
     }
 
