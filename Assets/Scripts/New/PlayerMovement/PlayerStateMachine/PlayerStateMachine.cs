@@ -74,6 +74,7 @@ public class PlayerStateMachine : MonoBehaviour
     public bool isBlockHeld;
     public bool isBlockJustPressed;
     public bool isParryWindowOpen = false;
+    public bool wasParried = false;
     private float parryWindowStartTime;
     [SerializeField]private float parryWindowDuration = 0.5f;
     /*----------------------------------------------------------------*/
@@ -159,11 +160,20 @@ public class PlayerStateMachine : MonoBehaviour
     }
     /*------------------------------------------------------------------*/
 
-    private void HandleIncomingAttacks(GameObject attacker, GameObject target) 
+    private void HandleIncomingAttacks(GameObject attacker, GameObject target, AttackData data) 
     {
         if (target != gameObject) return;
 
+        wasParried = false;
+
         TriggerParryWindow();
+
+        if (isParryWindowOpen && isBlockJustPressed && !isBlockHeld) 
+        {
+            wasParried = true;
+            Debug.Log("Attack Parried");
+        }
+
     }
     public void TriggerParryWindow()
     {
@@ -205,10 +215,10 @@ public class PlayerStateMachine : MonoBehaviour
         SwitchState(stateFactory.PowerUp(PowerUpType.PullThroughAir, airPullDuration));
     }
     
-    /*---------------------------------------------------*/
+    /*----------------------hh-----------------------------*/
     //void OnEnable() => _playerControls.Enable();
     //void OnDisable() => _playerControls.Disable();
-    /*---------------------------------------------------*/
+    /*----------------------hh-----------------------------*/
 
     
     void Update()

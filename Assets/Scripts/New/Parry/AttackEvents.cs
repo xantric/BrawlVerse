@@ -3,11 +3,11 @@ using UnityEngine;
 
 public static class AttackEvents
 {
-    public static event Action<GameObject, GameObject> OnIncomingAttack;
+    public static event Action<GameObject, GameObject, AttackData> OnIncomingAttack;
 
-    public static void Broadcast(GameObject attacker, GameObject target) 
+    public static void Broadcast(GameObject attacker, GameObject target, AttackData data) 
     {
-        Debug.Log("Attack Broadcast: " + attacker.name + "->" + target.name);
-        OnIncomingAttack?.Invoke(attacker, target);
+        Debug.Log($"Attack broadcast: {attacker.name} -> {target.name} [{data.attackName}]");
+        OnIncomingAttack?.Invoke(attacker, target, data);
     }
 }
