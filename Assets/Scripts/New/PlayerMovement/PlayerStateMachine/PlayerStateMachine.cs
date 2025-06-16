@@ -158,6 +158,13 @@ public class PlayerStateMachine : MonoBehaviour
         /*-------------------------------------------------------------------*/
     }
     /*------------------------------------------------------------------*/
+
+    private void HandleIncomingAttacks(GameObject attacker, GameObject target) 
+    {
+        if (target != gameObject) return;
+
+        TriggerParryWindow();
+    }
     public void TriggerParryWindow()
     {
         parryWindowStartTime = Time.time;
@@ -166,6 +173,19 @@ public class PlayerStateMachine : MonoBehaviour
 
         Debug.Log("Parry window triggered.");
     }
+
+    private void OnEnable() 
+    {
+        AttackEvents.OnIncomingAttack += HandleIncomingAttacks;
+        _playerControls.Enable();
+    }
+
+    private void OnDisable() 
+    {
+        AttackEvents.OnIncomingAttack -= HandleIncomingAttacks;
+        _playerControls.Disable();
+    }
+
     /*-------------------------------------------------------------------*/
     void OnGrabPressed(InputAction.CallbackContext ctx)
     {
@@ -185,9 +205,10 @@ public class PlayerStateMachine : MonoBehaviour
         SwitchState(stateFactory.PowerUp(PowerUpType.PullThroughAir, airPullDuration));
     }
     
-
-    void OnEnable() => _playerControls.Enable();
-    void OnDisable() => _playerControls.Disable();
+    /*---------------------------------------------------*/
+    //void OnEnable() => _playerControls.Enable();
+    //void OnDisable() => _playerControls.Disable();
+    /*---------------------------------------------------*/
 
     
     void Update()
