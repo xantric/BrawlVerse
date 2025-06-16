@@ -37,9 +37,6 @@ public class PlayerAttackState : PlayerBaseState
         Collider[] hits = Physics.OverlapSphere(origin.position, data.range, ctx.EnemyLayer);
         foreach (var hit in hits)
         {
-            // Apply damage
-            if (hit.TryGetComponent<EnemyHealth>(out var health))
-                health.TakeDamage(data.damage);
             /*---------------------------------------------------------------------*/
 
             AttackEvents.Broadcast(ctx.gameObject, hit.gameObject, data);
@@ -54,6 +51,11 @@ public class PlayerAttackState : PlayerBaseState
             }
 
             /*---------------------------------------------------------------------*/
+            
+            // Apply damage
+
+            if (hit.TryGetComponent<EnemyHealth>(out var health))
+                health.TakeDamage(data.damage);
         
             // Apply force if it has Rigidbody
         
