@@ -1,18 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class AttackEvents : MonoBehaviour
+public static class AttackEvents
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public static event Action<GameObject, GameObject> OnIncomingAttack;
 
-    // Update is called once per frame
-    void Update()
+    public static void Broadcast(GameObject attacker, GameObject target) 
     {
-        
+        Debug.Log("Attack Broadcast: " + attacker.name + "->" + target.name);
+        OnIncomingAttack?.Invoke(attacker, target);
     }
 }
