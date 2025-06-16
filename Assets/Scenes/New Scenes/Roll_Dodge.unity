@@ -215,13 +215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 383a420430ef8534ca92f0da8210917f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1915391307}
-  distance: 5
-  height: 2
-  sensitivityX: 3
-  sensitivityY: 3
-  yMinLimit: -35
-  yMaxLimit: 60
 --- !u!1 &385276573
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +227,7 @@ GameObject:
   - component: {fileID: 385276576}
   - component: {fileID: 385276575}
   - component: {fileID: 385276574}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -699,33 +692,9 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!143 &1157977470 stripped
-CharacterController:
-  m_CorrespondingSourceObject: {fileID: 5337548612595346958, guid: aa90ce0505739de48888381f1cb477bf,
-    type: 3}
-  m_PrefabInstance: {fileID: 703739757}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1276600764 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2276275970489669414, guid: aa90ce0505739de48888381f1cb477bf,
-    type: 3}
-  m_PrefabInstance: {fileID: 703739757}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1915391306 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6497750411726380657, guid: aa90ce0505739de48888381f1cb477bf,
-    type: 3}
-  m_PrefabInstance: {fileID: 703739757}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1915391307 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5865785949638165707, guid: aa90ce0505739de48888381f1cb477bf,
-    type: 3}
-  m_PrefabInstance: {fileID: 703739757}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1915391312 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4167573115264430201, guid: aa90ce0505739de48888381f1cb477bf,
     type: 3}
   m_PrefabInstance: {fileID: 703739757}
   m_PrefabAsset: {fileID: 0}
@@ -741,25 +710,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02cc68c87ee5f4c41b58afba629788e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterController: {fileID: 1157977470}
-  moveSpeed: 10
-  gravity: -9.81
-  jumpHeight: 3
-  groundDistance: 0.2
-  GroundCheck: {fileID: 1276600764}
-  GroundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  CameraXoffset: 0
-  CameraYoffset: 0
-  CameraZoffset: 0
-  senstivity: 0
-  _animator: {fileID: 1915391312}
-  dodgeSpeed: 20
-  dodgeDuration: 0.8
-  rollDuration: 2.4
-  isRolling: 0
-  camTransform: {fileID: 883246462}
 --- !u!1 &1961413854
 GameObject:
   m_ObjectHideFlags: 0

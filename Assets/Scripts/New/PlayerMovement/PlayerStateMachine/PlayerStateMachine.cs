@@ -68,6 +68,16 @@ public class PlayerStateMachine : MonoBehaviour
     public bool isGrounded;
     public bool isAttacking;
 
+    /*----------------------------------------------------------------*/
+    [Header("!!Testing_Parry!!")]
+    //temp variables for parry
+    public bool isBlockHeld;
+    public bool isBlockJustPressed;
+    public bool isParryWindowOpen = false;
+    public bool wasParried = false;
+    private float parryWindowStartTime;
+    [SerializeField]private float parryWindowDuration = 0.5f;
+    /*----------------------------------------------------------------*/
 
     private PlayerBaseState currentState;
     private PlayerStateFactory stateFactory;
@@ -132,8 +142,61 @@ public class PlayerStateMachine : MonoBehaviour
         _playerControls.Grab.GrabMouse.performed += OnGrabPressed;
         _playerControls.PowerUps.Shield.performed += ActivateShield;
         _playerControls.PowerUps.PullThroughAir.performed += ActivatePullThroughAir;
+        /*-------------------------------------------------------------------*/
+        _playerControls.Parry.Parry.performed += ctx =>
+        {
+            isBlockHeld = true;
+            isBlockJustPressed = true;
+            if (!(currentState is PlayerDefenseState))
+            {
+                SwitchState(stateFactory.Defense());
+            }
+        };
+        _playerControls.Parry.Parry.canceled += ctx =>
+        {
+            isBlockHeld = false;
+        };
+        /*-------------------------------------------------------------------*/
+    }
+    /*------------------------------------------------------------------*/
+
+    private void HandleIncomingAttacks(GameObject attacker, GameObject target, AttackData data) 
+    {
+        if (target != gameObject) return;
+
+        wasParried = false;
+
+        TriggerParryWindow();
+
+        if (isParryWindowOpen && isBlockJustPressed && !isBlockHeld) 
+        {
+            wasParried = true;
+            Debug.Log("Attack Parried");
+        }
+
+    }
+    public void TriggerParryWindow()
+    {
+        parryWindowStartTime = Time.time;
+        isParryWindowOpen = true;
+        
+
+        Debug.Log("Parry window triggered.");
     }
 
+    private void OnEnable() 
+    {
+        AttackEvents.OnIncomingAttack += HandleIncomingAttacks;
+        _playerControls.Enable();
+    }
+
+    private void OnDisable() 
+    {
+        AttackEvents.OnIncomingAttack -= HandleIncomingAttacks;
+        _playerControls.Disable();
+    }
+
+    /*-------------------------------------------------------------------*/
     void OnGrabPressed(InputAction.CallbackContext ctx)
     {
         isGrabbing = ctx.ReadValueAsButton();
@@ -152,9 +215,10 @@ public class PlayerStateMachine : MonoBehaviour
         SwitchState(stateFactory.PowerUp(PowerUpType.PullThroughAir, airPullDuration));
     }
     
-
-    void OnEnable() => _playerControls.Enable();
-    void OnDisable() => _playerControls.Disable();
+    /*----------------------hh-----------------------------*/
+    //void OnEnable() => _playerControls.Enable();
+    //void OnDisable() => _playerControls.Disable();
+    /*----------------------hh-----------------------------*/
 
     
     void Update()
@@ -169,7 +233,32 @@ public class PlayerStateMachine : MonoBehaviour
             currentState.HandleJumpInput();
             isJumpPressed = false;
         }
+        /*---------------------------------------------------------------------------*/
+        if (isParryWindowOpen)
+        {
+            float elapsed = Time.time - parryWindowStartTime;
 
+            if (elapsed > parryWindowDuration)
+            {
+                isParryWindowOpen = false;
+            }
+            else if (isBlockJustPressed)
+            {
+                
+                Debug.Log("Perfect parry!");
+                SwitchState(stateFactory.ParrySub());
+                isParryWindowOpen = false;
+            }
+            else if (isBlockHeld)
+            {
+                
+                Debug.Log("Blocking — parry not triggered");
+            }
+        }
+
+        isBlockJustPressed = false;
+        /*----------------------------------------------------------------------------*/
+       
     }
 
     public void SwitchState(PlayerBaseState newState)

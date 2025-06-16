@@ -18,5 +18,10 @@ public class PlayerStateFactory
     {
         return new PlayerPowerUpState(ctx, this, type, duration);
     }
+    /*--------------------------------------------------------------------------*/
+    public PlayerBaseState Defense() => new PlayerDefenseState(ctx, this);
+    public PlayerBaseState ParrySub() => new PlayerParrySubState(ctx, this);
+    public PlayerBaseState BlockSub() => new PlayerBlockSubState(ctx, this);
+    /*--------------------------------------------------------------------------*/
 
 }

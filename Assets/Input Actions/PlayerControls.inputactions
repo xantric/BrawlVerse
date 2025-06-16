@@ -437,6 +437,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Parry",
+            "id": "0653d178-6d6b-4d4c-904f-49bf6ac41648",
+            "actions": [
+                {
+                    "name": "Parry",
+                    "type": "Button",
+                    "id": "d63a7c7a-65d8-40b4-a0d4-55c05cbd6d8e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "44e2a12a-e8ea-49f1-aa55-74f5d0af6d5b",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Parry",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
