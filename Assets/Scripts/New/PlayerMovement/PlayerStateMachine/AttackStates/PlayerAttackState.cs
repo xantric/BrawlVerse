@@ -41,11 +41,9 @@ public class PlayerAttackState : PlayerBaseState
         if (hit.TryGetComponent<EnemyHealth>(out var health))
             health.TakeDamage(data.damage);
         /*---------------------------------------------------------------------*/
-        //opens the parry window for enemy
-        if (hit.TryGetComponent<PlayerStateMachine>(out var psm))
-        {
-            psm.TriggerParryWindow();
-        }
+
+         AttackEvents.Broadcast(ctx.gameObject, hit.gameObject);
+
         /*---------------------------------------------------------------------*/
         // Apply force if it has Rigidbody
         if (hit.attachedRigidbody != null)
