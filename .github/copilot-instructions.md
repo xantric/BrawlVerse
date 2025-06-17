@@ -2,7 +2,9 @@
 - Project name: BrawlVerse
 - Unity version: Unity 2022.3.62f1
 - Active scene:
+  - Name: Level
   - Name: 240291
+ main
   - Tags:
     - Untagged, Respawn, Finish, EditorOnly, MainCamera, Player, GameController, push, enemy, Enemy, Water
   - Layers:
@@ -10,5 +12,5 @@
 - Active game object:
   - Name: ThirdPersonController
   - Tag: Untagged
-  - Layer: Default
+  - Layer: Enemy
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
