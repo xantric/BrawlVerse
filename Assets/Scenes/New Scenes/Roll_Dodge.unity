@@ -215,6 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 248492ea74e5e1146bc6ad2f0ab17230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+
   player: {fileID: 1915391307}
   distance: 3
   height: 2
@@ -234,7 +235,7 @@ GameObject:
   - component: {fileID: 385276576}
   - component: {fileID: 385276575}
   - component: {fileID: 385276574}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

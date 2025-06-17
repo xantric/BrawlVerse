@@ -1975,7 +1975,8 @@ MonoBehaviour:
   characterController: {fileID: 954775008}
   cam: {fileID: 455122643}
   animator: {fileID: 472598211}
-  baseOverrideController: {fileID: 0}
+  baseOverrideController: {fileID: 22100000, guid: 88e156c08185d0c43be4b0055cb1f3b5,
+    type: 2}
   runtimeOverride: {fileID: 0}
   Speed: 5
   TurnVelocity: 0.1
@@ -2010,6 +2011,9 @@ MonoBehaviour:
   isJumpPressed: 0
   isGrounded: 0
   isAttacking: 0
+  isBlockHeld: 0
+  isBlockJustPressed: 0
+  isParryWindowOpen: 0
 --- !u!143 &954775008
 CharacterController:
   m_ObjectHideFlags: 0
