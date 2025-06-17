@@ -1972,13 +1972,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16fade98a628d59468553485807f54dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveInput: {x: 0, y: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  isJumpPressed: 0
-  isGrounded: 0
   characterController: {fileID: 954775008}
   cam: {fileID: 455122643}
   animator: {fileID: 472598211}
+  baseOverrideController: {fileID: 0}
+  runtimeOverride: {fileID: 0}
   Speed: 5
   TurnVelocity: 0.1
   gravity: -9.81
@@ -1988,6 +1986,30 @@ MonoBehaviour:
   gLayer:
     serializedVersion: 2
     m_Bits: 8
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  attacks: []
+  attackOrigins: []
+  grabRadius: 1.2
+  grabDuration: 2.5
+  grabCooldown: 10
+  pushableLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  grabPoint: {fileID: 0}
+  grabCooldownTimer: 0
+  bubbleShieldEffect: {fileID: 0}
+  isShieldActive: 0
+  bubbleShieldDuration: 10
+  airPullDistance: 10
+  airPullDuration: 0.4
+  isDashing: 0
+  moveInput: {x: 0, y: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  isJumpPressed: 0
+  isGrounded: 0
+  isAttacking: 0
 --- !u!143 &954775008
 CharacterController:
   m_ObjectHideFlags: 0
