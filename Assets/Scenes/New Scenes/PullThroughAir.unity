@@ -575,7 +575,7 @@ Transform:
   m_GameObject: {fileID: 180895107}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.21, z: -4.32}
+  m_LocalPosition: {x: 0, y: 3.67, z: -4.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -829,7 +829,7 @@ Transform:
   m_GameObject: {fileID: 455122642}
   serializedVersion: 2
   m_LocalRotation: {x: 0.22361803, y: -0.00000003025487, z: 0.0000000069413106, w: 0.97467685}
-  m_LocalPosition: {x: 0, y: 4.21, z: -4.32}
+  m_LocalPosition: {x: 0, y: 3.67, z: -4.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1952,7 +1952,7 @@ Transform:
   m_GameObject: {fileID: 954775005}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.17, z: 0}
+  m_LocalPosition: {x: 0, y: 0.63, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1972,13 +1972,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16fade98a628d59468553485807f54dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveInput: {x: 0, y: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  isJumpPressed: 0
-  isGrounded: 0
   characterController: {fileID: 954775008}
   cam: {fileID: 455122643}
   animator: {fileID: 472598211}
+  baseOverrideController: {fileID: 22100000, guid: 88e156c08185d0c43be4b0055cb1f3b5,
+    type: 2}
+  runtimeOverride: {fileID: 0}
   Speed: 5
   TurnVelocity: 0.1
   gravity: -9.81
@@ -1988,6 +1987,30 @@ MonoBehaviour:
   gLayer:
     serializedVersion: 2
     m_Bits: 8
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  attacks: []
+  attackOrigins: []
+  grabRadius: 1.2
+  grabDuration: 2.5
+  grabCooldown: 10
+  pushableLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  grabPoint: {fileID: 0}
+  grabCooldownTimer: 0
+  bubbleShieldEffect: {fileID: 0}
+  isShieldActive: 0
+  bubbleShieldDuration: 10
+  airPullDistance: 10
+  airPullDuration: 0.4
+  isDashing: 0
+  moveInput: {x: 0, y: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  isJumpPressed: 0
+  isGrounded: 0
+  isAttacking: 0
 --- !u!143 &954775008
 CharacterController:
   m_ObjectHideFlags: 0
