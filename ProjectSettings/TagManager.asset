@@ -4,24 +4,24 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - push
-  - enemy
-  - Enemy
-  - Water
+  - Table_Big
+  - Sofa
+  - Chair
+  - Stand_Table
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Ground
+  - ground
   - Water
   - UI
-  - 
-  - Water
-  - UI
-  - Player
-  - Pushable
   - Enemy
-  - friend
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
