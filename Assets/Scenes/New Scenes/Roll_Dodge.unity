@@ -212,9 +212,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 355213440}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 383a420430ef8534ca92f0da8210917f, type: 3}
+  m_Script: {fileID: 11500000, guid: 248492ea74e5e1146bc6ad2f0ab17230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+
+  player: {fileID: 1915391307}
+  distance: 3
+  height: 2
+  sensitivityX: 3
+  sensitivityY: 3
+  yMinLimit: -35
+  yMaxLimit: 60
 --- !u!1 &385276573
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,6 +703,12 @@ MonoBehaviour:
 --- !u!1 &1915391306 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6497750411726380657, guid: aa90ce0505739de48888381f1cb477bf,
+    type: 3}
+  m_PrefabInstance: {fileID: 703739757}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1915391307 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5865785949638165707, guid: aa90ce0505739de48888381f1cb477bf,
     type: 3}
   m_PrefabInstance: {fileID: 703739757}
   m_PrefabAsset: {fileID: 0}
