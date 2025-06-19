@@ -4,31 +4,24 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - push
-  - enemy
-  - Enemy
-<<<<<<< Updated upstream
-  - Water
-=======
-  - Sofa
   - Table_Big
-  - Stand_Table
+  - Sofa
   - Chair
->>>>>>> Stashed changes
+  - Stand_Table
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Ground
+  - ground
   - Water
   - UI
-  - 
-  - Water
-  - UI
-  - Player
-  - Pushable
   - Enemy
-  - friend
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
