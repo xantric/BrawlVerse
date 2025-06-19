@@ -7,7 +7,14 @@ TagManager:
   - push
   - enemy
   - Enemy
+<<<<<<< Updated upstream
   - Water
+=======
+  - Sofa
+  - Table_Big
+  - Stand_Table
+  - Chair
+>>>>>>> Stashed changes
   layers:
   - Default
   - TransparentFX
