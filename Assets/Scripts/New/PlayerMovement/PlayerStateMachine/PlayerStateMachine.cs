@@ -87,7 +87,7 @@ public class PlayerStateMachine : MonoBehaviour
     {
         InitializeControls();
         cam = Camera.main;
-
+        animator.applyRootMotion = true;
         runtimeOverride = new AnimatorOverrideController(baseOverrideController);
         animator.runtimeAnimatorController = runtimeOverride;
 
