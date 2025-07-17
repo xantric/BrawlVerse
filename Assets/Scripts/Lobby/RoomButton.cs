@@ -8,6 +8,6 @@ public class RoomButton : MonoBehaviour
 
     public void OnButtonPressed()
     {
-        RoomList.instance.JoinRoomByString( _roomName );
+      RoomList.Instance.JoinRoomByName(_roomName);
     }
 }

@@ -7,96 +7,102 @@ using UnityEngine;
 
 public class RoomList : MonoBehaviourPunCallbacks
 {
-    public static RoomList instance;
-    [Header("Room Manager")]
-    public GameObject RoomManagerGameObject;
+    // ← Singleton instance for external access
+    public static RoomList Instance { get; private set; }
+
+    [Header("Room Manager Link")]
+    [Tooltip("Drag your RoomManager GameObject here")]
     public RoomManager roomManager;
+    public GameObject roomManagerUI;
 
-    [Header("UI")]
-    public GameObject roomNameUI;
-    public Transform parentUI;
+    [Header("Room List UI")]
+    public GameObject roomNamePrefab;
+    public Transform roomListParent;
 
-    private List<RoomInfo> cachedRoomList = new List<RoomInfo>();
+    private List<RoomInfo> cachedRooms = new();
 
-    private void Awake()
+    void Awake()
     {
-        instance = this;
+        // ← enforce Singleton
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     IEnumerator Start()
     {
+        // leave any existing room
         if (PhotonNetwork.InRoom)
         {
             PhotonNetwork.LeaveRoom();
-            PhotonNetwork.Disconnect();
+            yield return new WaitUntil(() => !PhotonNetwork.InRoom);
         }
 
-        yield return new WaitUntil(() => !PhotonNetwork.IsConnected);
-        PhotonNetwork.ConnectUsingSettings();
+        // connect or wait
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+            yield return new WaitUntil(() => PhotonNetwork.IsConnectedAndReady);
+        }
     }
-    public void ChangeRoomToCreateName(string roomName)
-    {
-        roomManager.roomName = roomName;
-    }
+
     public override void OnConnectedToMaster()
     {
-        base.OnConnectedToMaster();
-        
+        // join lobby once connected
         PhotonNetwork.JoinLobby();
+    }
+
+    public override void OnJoinedLobby()
+    {
+        // once in lobby, show room‑list UI
+        Debug.Log("✅ Joined Lobby.");
+        roomManager.ConnectingScreenUI.SetActive(false);
+        roomManager.NickNameUI.SetActive(false);
+        roomManagerUI.SetActive(true);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        if(cachedRoomList.Count <= 0)
+        // maintain cache
+        foreach (RoomInfo room in roomList)
         {
-            cachedRoomList = roomList;
-        }
-        else
-        {
-            foreach(var room in roomList)
+            int idx = cachedRooms.FindIndex(r => r.Name == room.Name);
+            if (idx >= 0)
             {
-                for(int i = 0; i < cachedRoomList.Count; i++)
-                {
-                    if(cachedRoomList[i].Name == room.Name)
-                    {
-                        List<RoomInfo> newList = cachedRoomList;
-                        if (room.RemovedFromList)
-                        {
-                            newList.Remove(newList[i]);
-                        }
-                        else
-                        {
-                            newList[i] = room;
-                        }
-                        cachedRoomList = newList;
-                    }
-                }
+                if (room.RemovedFromList)
+                    cachedRooms.RemoveAt(idx);
+                else
+                    cachedRooms[idx] = room;
+            }
+            else if (!room.RemovedFromList)
+            {
+                cachedRooms.Add(room);
             }
         }
-        UpdateUI();
+
+        UpdateRoomListUI();
     }
 
-    void UpdateUI()
+    void UpdateRoomListUI()
     {
-        foreach(Transform child in parentUI)
-        {
+        // clear old entries
+        foreach (Transform child in roomListParent)
             Destroy(child.gameObject);
-        }
-        foreach(var room in cachedRoomList)
+
+        // instantiate new entries
+        foreach (RoomInfo room in cachedRooms)
         {
-            var roomItem = Instantiate(roomNameUI, parentUI);
-            roomItem.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = room.Name;
-            roomItem.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = room.PlayerCount.ToString() + "/" + "10";
-
-            roomItem.GetComponent<RoomButton>()._roomName = room.Name;
+            GameObject item = Instantiate(roomNamePrefab, roomListParent);
+            item.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = room.Name;
+            item.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = $"{room.PlayerCount}/10";
+            item.GetComponent<RoomButton>()._roomName = room.Name;
         }
     }
 
-    public void JoinRoomByString(string roomName)
+    // called by RoomButton when a room‑entry is clicked
+    public void JoinRoomByName(string roomName)
     {
-        roomManager.roomName = roomName;
-        RoomManagerGameObject.SetActive(true);
-        this.gameObject.SetActive(false);
+        roomManager.SetRoomName(roomName);
+        roomManagerUI.SetActive(true);
+        gameObject.SetActive(false);
     }
-
 }

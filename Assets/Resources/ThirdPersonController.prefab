@@ -594,6 +594,7 @@ GameObject:
   - component: {fileID: 2661626697315196237}
   - component: {fileID: 2645079519004122653}
   - component: {fileID: 6580807498778433888}
+  - component: {fileID: 3175004065515251620}
   m_Layer: 0
   m_Name: ThirdPersonController
   m_TagString: Untagged
@@ -774,6 +775,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  maxHealth: 100
+  healthBar: {fileID: 0}
   _playerStateMachine: {fileID: 0}
   isLocalPlayer: 0
 --- !u!64 &6580807498778433888
@@ -798,6 +801,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 5461320835613783329, guid: bee44cc15679aa649ad8b3090998a5ac, type: 3}
+--- !u!114 &3175004065515251620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8273347534387816858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9017444d3025f914e985d820eb2e2504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  score: 0
+  playerScoreText: {fileID: 0}
 --- !u!1 &8865833536509060007
 GameObject:
   m_ObjectHideFlags: 0

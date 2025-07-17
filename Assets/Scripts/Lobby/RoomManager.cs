@@ -1,68 +1,134 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
+using UnityEngine;
 using Cinemachine;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
-    public static RoomManager Instance;
-    // Start is called before the first frame update
-    [Header("Player Object")]
-    public GameObject player;
+    public static RoomManager Instance { get; private set; }
 
-    [Header("Player Spawn Point")]
-    public Transform spanPoint;
+    [Header("Player Setup")]
+    public GameObject playerPrefab;
+    public Transform spawnPoint;
 
-    [Header("Free Look Camera")]
-    public CinemachineFreeLook freeLook;
-
-    [Header("Camera UI")]
-    public GameObject roomCam;
+    [Header("Cameras")]
+    [Tooltip("Your old lobby camera GameObject (if any)")]
+    public GameObject lobbyCamera;
+    [Tooltip("Your in‑room camera GameObject (the one you now want disabled)")]
+    public GameObject roomCamera;
+    [Tooltip("Your Cinemachine FreeLook vcam to follow the player")]
+    public CinemachineFreeLook freeLookCamera;
 
     [Header("UI")]
-    public GameObject nickNameUI;
-    public GameObject connectingUI;
+    public GameObject NickNameUI;
+    public GameObject ConnectingScreenUI;
 
-    [Header("Room Name")]
-    public string roomName = "test";
+    [HideInInspector] public string roomName = "default";
+    private string nickname = "Unnamed";
+    private bool joinRequested = false;
 
-    string nickName = "unnamed";
-    private void Awake()
+    void Awake()
     {
-        Instance = this;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+
+        // Make sure the FreeLook is off until after join
+        if (freeLookCamera != null)
+            freeLookCamera.gameObject.SetActive(false);
     }
-    public void SetNickname(string _name)
-    {
-        nickName = _name;
-    }
+
+    public void SetNickname(string name) => nickname = name;
+    public void SetRoomName(string name)     => roomName = name;
+
     public void OnJoinButtonPressed()
     {
-        Debug.Log(message: "Connecting. . . ");
-        Debug.Log(roomName);
-        PhotonNetwork.JoinOrCreateRoom(roomName, new Photon.Realtime.RoomOptions(), null);
+        Debug.Log("Join Button Pressed. State: " + PhotonNetwork.NetworkClientState);
+        joinRequested = true;
 
-        nickNameUI.SetActive(false);
-        connectingUI.SetActive(true);
+        NickNameUI.SetActive(false);
+        ConnectingScreenUI.SetActive(true);
+
+        if (!PhotonNetwork.IsConnected)
+            PhotonNetwork.ConnectUsingSettings();
+        else
+            PhotonNetwork.JoinLobby();
     }
+
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("Connected to Master Server.");
+        if (joinRequested)
+            PhotonNetwork.JoinLobby();
+    }
+
+    public override void OnJoinedLobby()
+    {
+        Debug.Log("Joined Lobby. Now creating/joining room: " + roomName);
+        if (joinRequested)
+        {
+            PhotonNetwork.JoinOrCreateRoom(
+                roomName,
+                new RoomOptions { MaxPlayers = 10 },
+                TypedLobby.Default
+            );
+            joinRequested = false;
+        }
+    }
+
     public override void OnJoinedRoom()
     {
-        Debug.Log("Room Joined");
-        roomCam.SetActive(false);
+        Debug.Log("Joined Room: " + roomName);
+
+        // 1) Hide the connecting UI
+        if (ConnectingScreenUI != null)
+            ConnectingScreenUI.SetActive(false);
+
+        // 2) Spawn the player (wires up freeLookCamera targets)
         SpawnPlayer();
+
+        // 3) Disable your old lobby camera (if you still use it)
+        if (lobbyCamera != null)
+            lobbyCamera.SetActive(false);
+
+        // 4) **Disable the roomCamera** that you no longer want active
+        if (roomCamera != null)
+            roomCamera.SetActive(false);
+
+        // 5) Activate the FreeLook vcam to follow the player
+        if (freeLookCamera != null)
+            freeLookCamera.gameObject.SetActive(true);
     }
 
     public void SpawnPlayer()
     {
-        GameObject _player = PhotonNetwork.Instantiate(player.name, spanPoint.position, Quaternion.identity);
-        _player.GetComponent<PlayerHealth>().isLocalPlayer = true;
-        PhotonView view = _player.GetComponent<PhotonView>();
-        view.RPC("SetPlayerName", RpcTarget.AllBuffered, nickName);
-        if (view != null && view.IsMine && freeLook != null)
+        if (playerPrefab == null)
         {
-            Transform lookAt = _player.transform.GetChild(1);
-            freeLook.Follow = lookAt;
-            freeLook.LookAt = lookAt;
+            Debug.LogError("[RoomManager] playerPrefab not assigned!");
+            return;
+        }
+
+        Vector3 pos = spawnPoint != null ? spawnPoint.position : Vector3.zero;
+        Quaternion rot = spawnPoint != null ? spawnPoint.rotation : Quaternion.identity;
+
+        GameObject player = PhotonNetwork.Instantiate(
+            playerPrefab.name,
+            pos,
+            rot
+        );
+        PhotonNetwork.LocalPlayer.NickName = nickname;
+
+        if (player.TryGetComponent<PhotonView>(out var view) && view.IsMine)
+        {
+            if (player.TryGetComponent<PlayerHealth>(out var h))
+                h.isLocalPlayer = true;
+
+            // Attach your FreeLook vcam to the player
+            Transform head = player.transform.childCount > 1
+                ? player.transform.GetChild(1)
+                : player.transform;
+
+            freeLookCamera.Follow = head;
+            freeLookCamera.LookAt   = head;
         }
     }
 }
